@@ -1,9 +1,9 @@
 function [y,Dstat,MAPE,RMSE,f_y] = Mainpredict( Model,X_train,Y_train,X_test,Y_test,horizon)
 
 
-%ÊäÈë£ºÌØÕ÷*Ñù±¾Êı
+
 Y = [];
-f_Y = [];%¼ÇÂ¼×îºótr¸öÑµÁ·¼¯
+f_Y = [];
 tr = 10;
 n = size(X_train,2);
 
@@ -61,7 +61,7 @@ switch Model
             Y_pre_elm = elmpredict(X_test,IW,B,LW,TF,TYPE);
             Y(k,:) = mapminmax('reverse',Y_pre_elm,outputps);
             
-            f_Y_pre_elm = elmpredict(X_train(:,n-(tr-1):n),IW,B,LW,TF,TYPE);%Ô¤²â×îºó10¸öÑµÁ·¼¯
+            f_Y_pre_elm = elmpredict(X_train(:,n-(tr-1):n),IW,B,LW,TF,TYPE);%é¢„æµ‹æœ€å10ä¸ªè®­ç»ƒé›†
             f_Y(k,:) = mapminmax('reverse',f_Y_pre_elm,outputps);
         end
         y = mean(Y,1);
@@ -74,7 +74,7 @@ switch Model
         
         
         
-    case 'BP' %ÊÔ´í·¨
+    case 'BP' %è¯•é”™æ³•
         Hidden_N = 6;
         for k=1:100
             [OutputWeight,Weight,Bias] = RVFLNNtrain(X_train', Y_train', Hidden_N);
@@ -99,7 +99,7 @@ switch Model
         [bestmse,bestc,bestg] = SVMcgForRegress(Y_train',X_train',1,2,-1,0);
         cmd = ['-c ', num2str(bestc), ' -g ', num2str(bestg) , ' -s 3 -p 0.01'];
         model = svmtrain(Y_train',X_train',cmd);
-        % ¿É¿¼ÂÇÓÃgrid_svr
+        
         [y,tmse,detesvalue] = svmpredict(Y_test',X_test',model);
         [f_y,tmse,detesvalue] = svmpredict(Y_train(:,n-(tr-1):n)',X_train(:,n-(tr-1):n)',model);
         
